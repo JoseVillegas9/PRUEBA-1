@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hola Dota</title>
+    <style>
+        body {
+            background-color: #000;
+            margin: 0;
+            padding: 0;
+            color: #00ff00;
+        }
+        .calculator {
+            width: 300px;
+            margin: 50px auto;
+            border: 2px solid #00aa00;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #000;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        #display {
+            width: 100%;
+            height: 40px;
+            font-size: 24px;
+            text-align: right;
+            margin-bottom: 10px;
+            padding: 5px;
+            box-sizing: border-box;
+            background-color: #111;
+            color: #00ff00;
+            border: 1px solid #00aa00;
+            border-radius: 5px;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        button {
+            height: 50px;
+            font-size: 18px;
+            border: 1px solid #00aa00;
+            border-radius: 5px;
+            background-color: #000;
+            color: #00ff00;
+            cursor: pointer;
+            box-shadow: 0 0 10px #00ff00;
+            transition: box-shadow 0.3s;
+        }
+        button:hover {
+            box-shadow: 0 0 15px #00ff00;
+        }
+        button:active {
+            box-shadow: 0 0 5px #00ff00;
+        }
+        iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            border: none;
+        }
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            object-fit: cover;
+            opacity: 0.85;
+        }
+        .play-button {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            background: rgba(0, 170, 0, 0.95);
+            color: #000;
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(0,255,0,0.6); }
+            50% { transform: scale(1.05); box-shadow: 0 0 18px rgba(0,255,0,0.9); }
+        }
+    </style>
+</head>
+<body>
+    <video id="bgVideo" autoplay loop playsinline muted>
+        <source src="videos/ti8infamous.mp4" type="video/mp4">
+    </video>
+    <button id="playVideo" class="play-button">Presiona aquí para escuchar</button>
+    <div class="calculator">
+        <input type="text" id="display" readonly>
+        <div class="buttons">
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button>+</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button>-</button>
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>*</button>
+            <button>0</button>
+            <button>.</button>
+            <button>=</button>
+            <button>/</button>
+            <button>C</button>
+        </div>
+    </div>
+    <script>
+        const display = document.getElementById('display');
+        const buttons = document.querySelectorAll('.buttons button');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const value = button.textContent;
+                if (value === 'C') {
+                    display.value = '';
+                } else if (value === '=') {
+                    try {
+                        display.value = eval(display.value);
+                    } catch {
+                        display.value = 'Error';
+                    }
+                } else {
+                    display.value += value;
+                }
+            });
+        });
+
+        const bgVideo = document.getElementById('bgVideo');
+        const playButton = document.getElementById('playVideo');
+
+        function initVideo() {
+            if (!bgVideo) return;
+            bgVideo.muted = true;
+            bgVideo.play().catch(() => {
+                // Autoplay con sonido bloqueado o navegadores que requieren interacción
+            });
+        }
+
+        playButton.addEventListener('click', () => {
+            bgVideo.muted = false;
+            bgVideo.volume = 0.8;
+            bgVideo.play();
+            playButton.style.display = 'none';
+        });
+
+        initVideo();
+    </script>
+</body>
+</html>
